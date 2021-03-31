@@ -10,6 +10,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -27,7 +29,6 @@ public class Controller implements Initializable {
         System.out.println("Controller created");
     }
 
-    @FXML
     public void calculateOutput(ActionEvent actionEvent) {
         System.out.println("Controller calculate");
         viewModel.calculateOutputString();
@@ -36,6 +37,16 @@ public class Controller implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         System.out.println("Controller init");
+
+        this.viewModel.addPropertyChangeListener(new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                if(evt.getPropertyName() == "RequiresPropertyChange" && evt.getNewValue().equals(true))
+                {
+                    InputTextField.requestFocus(); // controlled by VM
+                }
+            }
+        });
 
         InputTextField.textProperty().bindBidirectional(viewModel.inputProperty());
 
